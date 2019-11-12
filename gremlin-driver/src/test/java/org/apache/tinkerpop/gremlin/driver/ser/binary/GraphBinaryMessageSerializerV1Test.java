@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
@@ -54,7 +55,7 @@ public class GraphBinaryMessageSerializerV1Test {
         final int mimeLen = buffer.readByte();
         buffer.readBytes(new byte[mimeLen]);
         final RequestMessage deserialized = serializer.deserializeRequest(buffer);
-        assertThat(request, new ReflectionEquals(deserialized));
+        assertThat(new ReflectionEquals(deserialized).matches(request), is(true));
     }
 
     @Test
@@ -68,7 +69,7 @@ public class GraphBinaryMessageSerializerV1Test {
         final int mimeLen = buffer.readByte();
         buffer.readBytes(new byte[mimeLen]);
         final RequestMessage deserialized = serializer.deserializeRequest(buffer);
-        assertThat(request, new ReflectionEquals(deserialized));
+        assertThat(new ReflectionEquals(deserialized).matches(request), is(true));
     }
 
     @Test
@@ -82,7 +83,7 @@ public class GraphBinaryMessageSerializerV1Test {
         final int mimeLen = buffer.readByte();
         buffer.readBytes(new byte[mimeLen]);
         final RequestMessage deserialized = serializer.deserializeRequest(buffer);
-        assertThat(request, new ReflectionEquals(deserialized));
+        assertThat(new ReflectionEquals(deserialized).matches(request), is(true));
     }
 
     @Test

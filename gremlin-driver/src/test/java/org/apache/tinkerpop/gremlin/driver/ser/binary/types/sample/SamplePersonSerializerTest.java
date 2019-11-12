@@ -43,6 +43,7 @@ import java.util.UUID;
 
 import static org.apache.tinkerpop.gremlin.driver.ser.AbstractMessageSerializer.TOKEN_IO_REGISTRIES;
 import static org.apache.tinkerpop.gremlin.driver.ser.GraphBinaryMessageSerializerV1.TOKEN_CUSTOM;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public class SamplePersonSerializerTest {
@@ -93,7 +94,7 @@ public class SamplePersonSerializerTest {
             writer.writeValue(person, buffer, nullable);
             final SamplePerson actual = reader.readValue(buffer, SamplePerson.class, nullable);
 
-            assertThat(actual, new ReflectionEquals(person));
+            assertThat(new ReflectionEquals(person).matches(actual), is(true));
             buffer.release();
         }
     }
@@ -108,7 +109,7 @@ public class SamplePersonSerializerTest {
         final ResponseMessage deserialized = serializer.deserializeResponse(serialized);
 
         final SamplePerson actual = (SamplePerson) deserialized.getResult().getData();
-        assertThat(actual, new ReflectionEquals(person));
+        assertThat(new ReflectionEquals(person).matches(actual), is(true));
     }
 
     public static class CustomIoRegistry extends AbstractIoRegistry {
