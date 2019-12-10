@@ -1234,7 +1234,11 @@ public class GremlinDriverIntegrateTest extends AbstractGremlinServerIntegration
         } catch (Exception ex) {
             throw ex;
         } finally {
-            cluster.close();
+            try {
+                cluster.close();
+            } catch (Exception ex) {
+                logger.error("Cluster closing failure", ex);
+            }
         }
     }
 
