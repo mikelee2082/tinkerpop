@@ -770,7 +770,7 @@ public abstract class Client {
 
             // the connection pool may not have been initialized if requests weren't sent across it. in those cases
             // we just need to return a pre-completed future
-            if (connectionPool == null) {
+            if (null == connectionPool) {
                 closing.set(CompletableFuture.completedFuture(null));
                 return closing.get();
             }
@@ -779,7 +779,7 @@ public abstract class Client {
             final RequestMessage closeMessage = buildMessage(RequestMessage.build(Tokens.OPS_CLOSE)
                                                                            .addArg(Tokens.ARGS_FORCE, forceClose)).create();
 
-            final CompletableFuture<Void> sessionClose = CompletableFuture.supplyAsync(() -> {
+            closing.set(CompletableFuture.supplyAsync(() -> {
                 try {
                     // block this up until we get a response from the server or an exception. it might not be accurate
                     // to wait for maxWaitForSessionClose because we wait that long for this future in calls to close()
@@ -795,11 +795,9 @@ public abstract class Client {
                     connectionPool.closeAsync();
                 }
                 return null;
-            }, cluster.executor());
+            }, cluster.executor()));
 
-            closing.set(sessionClose);
-
-            return sessionClose;
+            return closing.get();
         }
 
         @Override
@@ -818,8 +816,9 @@ public abstract class Client {
                 logger.warn(msg, ex);
             } finally {
                 // a bit of an insurance policy for closing down the client side as we do already call this
-                // in closeAsync()
-                connectionPool.closeAsync().join();
+                // in closeAsync(). it seems like a client can get created but maybe not initialized so when things
+                // get here the pull might be null.
+                if (connectionPool != null) connectionPool.closeAsync().join();
             }
         }
     }
