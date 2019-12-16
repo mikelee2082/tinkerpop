@@ -28,6 +28,7 @@ image::https://raw.githubusercontent.com/apache/tinkerpop/master/docs/static/ima
 * Bump to Tornado 5.x for gremlin-python.
 * Deprecated `TraversalStrategies.applyStrategies()`.
 * Deprecated Jython support in `gremlin-python`.
+* Improved Gremlin Server executor thread handling on client close requests.
 * Reverted: Modified Java driver to use IP address rather than hostname to create connections.
 
 [[release-3-3-9]]
